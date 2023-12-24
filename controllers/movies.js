@@ -63,10 +63,15 @@ const deleteMovie = asyncErrorHandler((req, res, next) => {
 
   return Movie.findById(movieId)
     .orFail()
-    .then((movie) => movie
-      .deleteOne(movie)
-      .orFail()
-      .then(() => res.send({ message: 'Фильм удалён' })))
+    .then((movie) => {
+      if (!movie.owner.equals(req.user._id)) {
+        throw new CustomError('Нельзя удалять фильмы других пользователей', StatusCodes.FORBIDDEN);
+      }
+      return movie
+        .deleteOne(movie)
+        .orFail()
+        .then(() => res.send({ message: 'Фильм удалён' }));
+    })
     .catch((error) => {
       if (error instanceof mongoose.Error.DocumentNotFoundError) {
         return next(new CustomError('Фильм с указанным ID не найден', StatusCodes.NOT_FOUND));
@@ -76,6 +81,4 @@ const deleteMovie = asyncErrorHandler((req, res, next) => {
     });
 });
 
-export {
-  createMovie, getMovies, deleteMovie,
-};
+export { createMovie, getMovies, deleteMovie };
