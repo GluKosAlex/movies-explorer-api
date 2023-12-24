@@ -106,6 +106,12 @@ const updateUser = (userData, userId, res, next) => User.findByIdAndUpdate(
       );
     }
 
+    if (error.code === ERROR_CODE_DUPLICATE_MONGO) {
+      return next(
+        new CustomError('Пользователь с таким адресом электронной почты уже существует', StatusCodes.CONFLICT),
+      );
+    }
+
     return Promise.reject(error);
   });
 
