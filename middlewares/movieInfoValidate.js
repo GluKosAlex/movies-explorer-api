@@ -12,7 +12,7 @@ export default celebrate({
     trailerLink: Joi.string().required().pattern(new RegExp(URLExpression)),
     thumbnail: Joi.string().required().pattern(new RegExp(URLExpression)),
     owner: Joi.string().hex().required().length(24), // _id of user saved the movie
-    movieId: Joi.string().hex().required().length(24), // id of movie from MoviesExplorer
+    movieId: Joi.number().required(), // id of movie from MoviesExplorer
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),
