@@ -4,9 +4,9 @@ import Movie from '../models/movie.js';
 import asyncErrorHandler from '../utils/asyncErrorHandler.js';
 import CustomError from '../utils/customError.js';
 
-// Get all movies controller
+// Get user's movies controller
 // eslint-disable-next-line no-unused-vars
-const getMovies = asyncErrorHandler((req, res, next) => Movie.find({})
+const getMovies = asyncErrorHandler((req, res, next) => Movie.find({ owner: req.user })
   .populate(['owner'])
   .then((movies) => {
     res.send(movies);
@@ -68,7 +68,7 @@ const deleteMovie = asyncErrorHandler((req, res, next) => {
         throw new CustomError('Нельзя удалять фильмы других пользователей', StatusCodes.FORBIDDEN);
       }
       return movie
-        .deleteOne(movie)
+        .deleteOne()
         .orFail()
         .then(() => res.send({ message: 'Фильм удалён' }));
     })
